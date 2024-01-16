@@ -1,28 +1,19 @@
-FROM mhart/alpine-node:8
+FROM arm64v8/node:12.22.12-alpine3.15
 
 WORKDIR /
 
 RUN set -x \
-    && apk update \
-    && apk add --no-cache nginx
+    && apk add --no-cache git
 
-# If you have native dependencies, you'll need extra tools
-# RUN apk add --no-cache make gcc g++ python
 RUN set -x \
-    && npm install node-raumserver
+    && git clone https://github.com/ChriD/node-raumserver.git
 
-ADD https://github.com/just-containers/s6-overlay/releases/download/v1.21.4.0/s6-overlay-amd64.tar.gz /tmp/
+WORKDIR /node-raumserver
+
 RUN set -x \
-    && gunzip -c /tmp/s6-overlay-amd64.tar.gz | tar -xf - -C /
-
-COPY ./manifest/ .
-
-# XXX: patch for broken template path. lots of trailing whitespace and windows line feeds, yummy.
-RUN set -x \
-    && cd /node_modules \
-    && patch -p1 < /config/setUriMetadata_fix_path.patch
+    && npm install
 
 EXPOSE 3535
 
-ENTRYPOINT ["/init"]
-
+ENTRYPOINT [ "node" ]
+CMD [ "raumserver.js" ]
