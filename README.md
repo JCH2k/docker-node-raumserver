@@ -9,6 +9,9 @@ Raumserver is a HTTP REST API daemon for RF devices created by ChriD (see https:
 docker run --net=host jch2k/node-raumserver
 ```
 
+### Important:
+Use `--net=host` (or in compose: `network_mode: host`) so raumserver can see the UPnP Raumfeld devices, which are not using TCP or UDP!
+
 
 ## Command reference
 https://github.com/ChriD/Raumserver/wiki/Available-control-and-data-requests
